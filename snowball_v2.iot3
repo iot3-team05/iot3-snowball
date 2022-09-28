@@ -1,0 +1,884 @@
+iot3: 2.0.0
+info:
+  name: snowball
+  oem: Amazon
+  model: snowball
+  versions:
+    - "Amazon"
+  description: ''
+  author: deep.desai@qeleo.com
+  stage: alpha
+  revision: 
+  labels:
+    - snowball
+    - v2
+  created: ""
+  updated: ""
+  documentation:
+    description: This IoT3 file supports AWS snowball system
+registration:
+  vaultId: vault_id
+  fingerprint:
+    - ip
+    - manifest
+    - vault_id
+  vault:
+    properties:
+      unlock_code:
+        key: unlock_code
+        placeholder: Unlock code
+        title: Unlock code
+        type: string
+    required:
+      - unlock_code
+  form:
+    properties:
+      ip:
+        key: ip
+        placeholder: IP Address
+        title: IP
+        type: string
+      manifest:
+        inputType: textarea?
+        key: manifest
+        placeholder: Base64 encoded manifest
+        title: Manifest
+        type: string
+      vault_id:
+        key: vault_id
+        pattern: ^(cu\w{6})(-av\w{6})$
+        placeholder: Vault ID
+        title: Vault ID
+        type: string
+    required:
+    - ip
+    - manifest
+    - vault_id
+engines:
+  isAgent: true
+  tunnel:
+    ssh: 
+      supported: false
+    http:
+      supported: false
+  shell:
+    schedule: '@always'
+    auth: ''
+    type: Shell  
+    options:
+      type: 'Bash'
+  shell_configure:
+    schedule: '@setup'
+    auth: ''
+    type: Shell  
+    options:
+      type: 'Bash'
+configuration:
+  setup:
+    dataEngine: '%{engines.shell_configure}'
+    dataSource: '%{resources.shell.scripts.setup_snowball}'
+    selector:
+      type: shellExitCode
+    extractor:
+    match: ^0$
+topology:
+  rootType: snowball
+  nodes: false
+types:
+  snowball:
+    name: Snowball
+    version: '[0.1,)'
+    reference: Snowball
+    attributes:
+      - local_device_id
+      - local_device_ip_address
+      - local_device_unlock_status
+      - local_device_network_status
+      - local_device_services
+      - device_info_device_id
+      - device_info_device_type
+      - device_info_network_ip_addresses
+      - device_info_total_hdd_storage
+      - device_info_total_ssd_storage
+      - device_info_file_space_available
+      - device_info_instances_running
+      - device_info_task_running
+      - device_info_failed_tasks
+      - s3_storage_service
+      - sts_service
+      - iam_users_service
+      - ec2_compute__service
+      - file_system_service
+      - ssm_service 
+      - virtual_network_interface_1
+      - virtual_network_physical_interface_id_1
+      - virtual_network_ip_address_1
+      - virtual_network_assignment_1
+      - virtual_network_interface_2
+      - virtual_network_physical_interface_id_2
+      - virtual_network_ip_address_2
+      - virtual_network_assignment_2
+      - virtual_network_interface_3
+      - virtual_network_physical_interface_id_3
+      - virtual_network_ip_address_3
+      - virtual_network_assignment_3
+      - virtual_network_interface_4
+      - virtual_network_physical_interface_id_4
+      - virtual_network_ip_address_4
+      - virtual_network_assignment_4
+      - compute_ec2_athonet_4GCore_11_3_3_7_state
+      - compute_ec2_druid_raemis_5_2_1_0_state      
+    price:
+      value: 0
+      unit: USD
+    energy:
+      value: 0
+      unit: W
+attributes:
+  local_device_id:
+    name: Local Device Id
+    description: Local Device Id
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'DeviceId'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  local_device_ip_address:
+    name: Local Device Ip Address
+    description: Local Device Ip Address
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'ActiveNetworkInterface.IpAddress'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  local_device_unlock_status:
+    name: Local Device Unlock Status
+    description: Local Device Unlock Status
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'UnlockStatus.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  local_device_network_status:
+    name: Local Device Network Status
+    description: Local Device Network Status
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: ''
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  local_device_services:
+    name: Local Device Services
+    description: Local Device Services
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info_services}'
+      selector:
+        type: gjson
+        expression:'ServiceIds.#' 
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_device_id:
+    name: Device Info Device Id
+    description: Device Information Device Id
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'DeviceId'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_device_type:
+    name: Device Info Device Type
+    description: Device Information Device Type
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'DeviceType'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_network_ip_addresses:
+    name: Device Info Network Ip Addresses
+    description: Device Information Network ip Addresses
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'ActiveNetworkInterface.IpAddress'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_total_hdd_storage:
+    name: Device Info Total Hdd Storage
+    description: Device Information Total Hdd Storage
+    description: 
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'DeviceCapacities.#(Name=="HDD Storage")0.Total'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_total_ssd_storage:
+    name: Device Info Total Sdd Storage
+    description: Device Information Total Sdd Storage
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.device_info}'
+      selector:
+        type: gjson
+        expression: 'DeviceCapacities.#(Name=="SSD Storage")0.Total'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_file_space_available:
+    name: Device Info File Space Available
+    description: Device Information File Space Available
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.script}'
+      selector:
+        type: gjson
+        expression: ''
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_instances_running:
+    name: Device Info Instance Running
+    description: Device Information Instance Running
+    attributes:
+      dataEngine: ''
+      dataSource: ''
+      selector:
+        type: gjson
+        expression: 
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_task_running:
+    name: Device Info Task Running
+    description: Device Information Task Running
+    attributes:
+      dataEngine: ''
+      dataSource: ''
+      selector:
+        type: gjson
+        expression: 
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  device_info_failed_tasks:
+    name: Device Info Failed Tasks
+    description: Device Information Failed Tasks
+    attributes:
+      dataEngine: ''
+      dataSource: ''
+      selector:
+        type: gjson
+        expression: 
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  s3_storage_service:
+    name: S3 Storage Service
+    description: S3 Storage Service
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.services_s3}'
+      selector:
+        type: gjson
+        expression: 'Status.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  sts_service:
+    name: Sts Service
+    description: Sts Service
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.services_sts}'
+      selector:
+        type: gjson
+        expression: 'Status.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  iam_users_service:
+    name: I Am Users Service
+    description: I Am Users Service
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.services_iam}'
+      selector:
+        type: gjson
+        expression: 'Status.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  ec2_compute__service:
+    name: Ec2 Compute Service
+    description:  Ec2 Compute Service
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.services_ec2}'
+      selector:
+        type: gjson
+        expression: 'Status.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  file_system_service:
+    name: File System Service
+    description: File System Service
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.services_fileinterface}'
+      selector:
+        type: gjson
+        expression: 'Status.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  ssm_service:
+    name: Ssm Service
+    description: Ssm Service
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.services_ssm}'
+      selector:
+        type: gjson
+        expression: 'Status.State'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_interface_1:
+    name: Virtual Network Interface 1
+    description: Virtual Network Interface 1
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.3.VirtualNetworkInterfaceArn'
+      extractor:
+        filters:
+          1: regexpExtract /((?<=[\/]).*)/ => $1
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_physical_interface_id_1:
+    name: Virtual Network Physical Interface Id 1
+    description: Virtual Network Physical Interface Id 1
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.3.PhysicalNetworkInterfaceId'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_ip_address_1:
+    name: Virtual Network Id Address 1
+    description: Virtual Network Id Address 1
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.3.IpAddress'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_assignment_1:
+    name: Virtual Network Assignment 1
+    description: Virtual Network Assignment 1
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.3.IpAddressAssignment'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_interface_2:
+    name: Virtual Network Interface 2
+    description: Virtual Network Interface 2
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.2.VirtualNetworkInterfaceArn'
+      extractor:
+        filters:
+          1: regexpExtract /((?<=[\/]).*)/ => $1
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_physical_interface_id_2:
+    name: Virtual Network Physical Interface Id 2
+    description: Virtual Network Physical Interface Id 2
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.2.PhysicalNetworkInterfaceId'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_ip_address_2:
+    name: Virtual Network Id Address 2
+    description: Virtual Network Id Address 2
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.2.IpAddress'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_assignment_2:
+    name: Virtual Network Assignment 2
+    description: Virtual Network Assignment 2
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.2.IpAddressAssignment'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_interface_3:
+    name: Virtual Network Interface 3
+    description: Virtual Network Interface 3
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.1.VirtualNetworkInterfaceArn'
+      extractor:
+        filters:
+          1: regexpExtract /((?<=[\/]).*)/ => $1
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_physical_interface_id_3:
+    name: Virtual Network Physical Interface Id 3
+    description: Virtual Network Physical Interface Id 3
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.1.PhysicalNetworkInterfaceId'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_ip_address_3:
+    name: Virtual Network Id Address 3
+    description: Virtual Network Id Address 3
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.1.IpAddress'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_assignment_3:
+    name: Virtual Network Assignment 3
+    description: Virtual Network Assignment 3
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.1.IpAddressAssignment'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_interface_4:
+    name: Virtual Network Interface 4
+    description: Virtual Network Interface 4
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.0.VirtualNetworkInterfaceArn'
+      extractor:
+        filters:
+          1: regexpExtract /((?<=[\/]).*)/ => $1
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_physical_interface_id_4:
+    name: Virtual Network Physical Interface Id 4
+    description: Virtual Network Physical Interface Id 4
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.0.PhysicalNetworkInterfaceId'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_ip_address_4:
+    name: Virtual Network Id Address 4
+    description: Virtual Network Id Address 4
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.0.IpAddress'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+  virtual_network_assignment_4:
+    name: Virtual Network Assignment 4
+    description: Virtual Network Assignment 4
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.network_interfaces}'
+      selector:
+        type: gjson
+        expression: 'VirtualNetworkInterfaces.0.IpAddressAssignment'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}   
+  compute_ec2_athonet_4GCore_11_3_3_7_state:
+    name: Compute EC2 Athonet 4GCore 11.3.3-7 State
+    description: Compute EC2 Athonet 4GCore 11.3.3-7 State
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.compute_ec2_instance}'
+      selector:
+        type: gjson
+        expression: 'Reservations.0.Instances.0.State.Name'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}   
+  compute_ec2_druid_raemis_5_2_1_0_state:
+    name: Compute EC2 Druid Raemis 5.2.1.0 State
+    description: Compute EC2 Druid Raemis 5.2.1.0 State
+    attributes:
+      dataEngine: '%{engines.shell}'
+      dataSource: '%{resources.shell.scripts.compute_ec2_instance}'
+      selector:
+        type: gjson
+        expression: 'Reservations.0.Instances.0.State.Name'
+      extractor:
+        filters: {}
+    properties:
+      readWrite: R
+      read:
+        type: String
+        enum: ''
+        unit: ''
+        instructions: {}
+resources:
+  auth:
+    shell_configure:
+      shell:
+        scripts: 
+          configure:
+  globals:
+    reg:
+      ip: ${registration.form.properties.ip}
+      port: ${registration.form.properties.port}
+      url: http://${registration.form.properties.ip}:${registration.form.properties.port}
+  shell:
+    scripts:
+      setup_snowball:
+        content: |
+         set -e
+         base64 -d '${resources.globals.reg.manifest}' > /tmp/manifest.bin
+         snowballEdge unlock-device --endpoint 'https://${resources.globals.reg.ip}' --manifest-file /tmp/manifest.bin --unlock-code '${resources.globals.vault.unlockCode}'
+      
+      device_info: 
+       content: snowballedge list-access-keys --profile 
+       resultType: application/json
+       
+      device_info_services: 
+        content: snowballEdge list-services 
+        resultType: application/json
+        
+      service_s3: 
+        content: snowballEdge describe-service --service-id s3 
+        resultType: application/json
+        
+      services_sts: 
+        content: snowballEdge describe-service --service-id sts 
+        resultType: application/json
+        
+      services_iam: 
+        content: snowballEdge describe-service --service-id iam
+        resultType: application/json
+      
+      services_ec2: 
+        content: snowballEdge describe-service --service-id ec2
+        resultType: application/json
+        
+      services_fileinterface: 
+        content: snowballEdge describe-service --service-id fileinterface
+        resultType: application/json
+        
+      services_ssm: 
+        content: snowballEdge describe-service --service-id ssm
+        resultType: application/json
+        
+      network_interfaces: 
+        content: snowballEdge describe-virtual-network-interfaces
+        resultType: application/json
+
+      compute_ec2_instance: 
+        content: aws ec2 describe-instances --endpoint ${resources.globals.reg.url} --profile snowball
+        resultType: application/json
