@@ -4,7 +4,7 @@ info:
   oem: Amazon
   model: snowball
   versions:
-    - "Amazon"
+    - "1.0"
   description: ''
   author: deep.desai@qeleo.com
   stage: alpha
@@ -12,7 +12,7 @@ info:
   labels:
     - snowball
     - v2
-  created: ""
+  created: "2022-09-15"
   updated: ""
   documentation:
     description: This IoT3 file supports AWS snowball system
@@ -215,7 +215,7 @@ attributes:
       dataSource: '%{resources.shell.scripts.device_info_services}'
       selector:
         type: gjson
-        expression:'ServiceIds.#' 
+        expression: 'ServiceIds.#'
       extractor:
         filters: {}
     properties:
@@ -282,7 +282,6 @@ attributes:
   device_info_total_hdd_storage:
     name: Device Info Total Hdd Storage
     description: Device Information Total Hdd Storage
-    description: 
     attributes:
       dataEngine: '%{engines.shell}'
       dataSource: '%{resources.shell.scripts.device_info}'
